@@ -1,14 +1,298 @@
-import { HeaderSection } from "@/components/header-section";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  BadgeCheck,
+  Clock3,
+  CreditCard,
+  HeartHandshake,
+  Leaf,
+  ShieldCheck,
+  Truck,
+  WheatOff
+} from "lucide-react";
 import { ProductGrid } from "@/components/product-grid";
 import { getFoods } from "@/lib/cms";
+
+const heroSlides = [
+  {
+    src: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1800&q=85",
+    alt: "A colorful spread of fresh vegetables and prepared dishes"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=1800&q=85",
+    alt: "A warm bowl of soup with fresh herbs"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1800&q=85",
+    alt: "A bright market salad with citrus and greens"
+  }
+];
+
+const categories = [
+  {
+    name: "Appetizers",
+    href: "/#featured",
+    image:
+      "https://images.unsplash.com/photo-1604909052743-94e838986d24?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    name: "Mains",
+    href: "/#featured",
+    image:
+      "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    name: "Desserts",
+    href: "/#featured",
+    image:
+      "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    name: "Beverages",
+    href: "/#featured",
+    image:
+      "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=800&q=80"
+  }
+];
+
+const testimonials = [
+  {
+    quote:
+      "The delivery was quick, the adobo bowl arrived hot, and the flavors tasted like a Sunday family table.",
+    name: "Marisol T.",
+    detail: "Verified local customer"
+  },
+  {
+    quote:
+      "Savory Base is my weeknight reset. The meals are fresh, clear about allergens, and easy to reorder.",
+    name: "Jordan P.",
+    detail: "Phoenix meal-plan regular"
+  },
+  {
+    quote:
+      "The lumpia and grain bowls are always party-ready. I love that the menu labels make dietary picks simple.",
+    name: "Ari G.",
+    detail: "Catering customer"
+  }
+];
+
+const trustBadges = [
+  { label: "25-45 min local delivery", icon: Truck },
+  { label: "Secure checkout", icon: ShieldCheck },
+  { label: "Vegan options", icon: Leaf },
+  { label: "Nut-free picks", icon: WheatOff },
+  { label: "Dietary notes", icon: BadgeCheck },
+  { label: "Cards accepted", icon: CreditCard }
+];
+
+const blogPosts = [
+  "How to build a balanced Filipino-inspired grain bowl",
+  "Meal prep tips for reheating sauces, stews, and sides",
+  "Behind the menu: bright citrus, slow-roasted aromatics, and fresh herbs"
+];
 
 export default async function Home() {
   const foods = await getFoods();
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
-      <HeaderSection />
-      <ProductGrid foods={foods} />
-    </div>
+    <>
+      <section className="relative min-h-[calc(100vh-132px)] overflow-hidden bg-gray-950 text-white">
+        <div className="absolute inset-0">
+          {heroSlides.map((slide, index) => (
+            <Image
+              key={slide.src}
+              src={slide.src}
+              alt={slide.alt}
+              fill
+              priority={index === 0}
+              sizes="100vw"
+              className={`object-cover ${index === 0 ? "opacity-70" : "opacity-0"}`}
+            />
+          ))}
+          <div className="absolute inset-0 bg-gray-950/55" />
+        </div>
+
+        <div className="relative mx-auto flex min-h-[calc(100vh-132px)] max-w-7xl flex-col justify-center px-4 py-16 sm:px-6 lg:px-8">
+          <p className="text-sm font-semibold uppercase tracking-wide text-gray-200">
+            Fresh delivery from Phoenix
+          </p>
+          <h1 className="mt-4 max-w-4xl text-5xl font-bold leading-tight sm:text-6xl lg:text-7xl">
+            Filipino favorites and meal-ready staples, delivered fast.
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-100">
+            Order comforting dishes, fresh sides, and pantry-ready bases with clear
+            dietary labels and reliable local delivery.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/#featured"
+              className="inline-flex h-12 items-center justify-center rounded-md bg-white px-6 text-base font-semibold text-gray-950 transition hover:bg-gray-200"
+            >
+              Order Now
+            </Link>
+            <Link
+              href="/#categories"
+              className="inline-flex h-12 items-center justify-center rounded-md border border-white/70 px-6 text-base font-semibold text-white transition hover:bg-white/10"
+            >
+              Explore Menu
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <div className="overflow-hidden border-y border-gray-300 bg-gray-900 py-3 text-sm font-semibold text-white">
+        <div className="flex min-w-max animate-promo gap-10 px-4">
+          <span>Limited time: 15% off family bundles</span>
+          <span>Free delivery on orders over $35</span>
+          <span>New vegan and nut-free picks added weekly</span>
+          <span>Order by 3 PM for dinner-window delivery</span>
+        </div>
+      </div>
+
+      <main className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <section id="categories" className="py-8">
+          <div className="mb-8 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-gray-600">
+                Product Categories
+              </p>
+              <h2 className="mt-2 text-3xl font-bold text-gray-950 sm:text-4xl">
+                Browse by craving
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-gray-600">
+              Tap into appetizers, mains, desserts, and beverages with image-led
+              categories sized for desktop and mobile browsing.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {categories.map((category) => (
+              <Link
+                key={category.name}
+                href={category.href}
+                className="group relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2"
+              >
+                <Image
+                  src={category.image}
+                  alt={`${category.name} category`}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                  className="object-cover transition duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gray-950/35" />
+                <span className="absolute bottom-4 left-4 text-2xl font-bold text-white">
+                  {category.name}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <ProductGrid foods={foods} />
+
+        <section className="py-14" aria-labelledby="social-proof-heading">
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 shadow-sm sm:p-8">
+            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-gray-600">
+                  Social Proof
+                </p>
+                <h2
+                  id="social-proof-heading"
+                  className="mt-2 text-3xl font-bold text-gray-950 sm:text-4xl"
+                >
+                  Loved by local customers
+                </h2>
+              </div>
+              <HeartHandshake className="h-10 w-10 text-gray-700" aria-hidden="true" />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              {testimonials.map((testimonial) => (
+                <article
+                  key={testimonial.name}
+                  className="rounded-lg border border-gray-200 bg-white p-5"
+                >
+                  <p className="text-sm leading-6 text-gray-700">{testimonial.quote}</p>
+                  <p className="mt-4 font-bold text-gray-950">{testimonial.name}</p>
+                  <p className="text-sm text-gray-600">{testimonial.detail}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+            <section className="flex min-h-full flex-col rounded-lg border border-gray-200 bg-gray-50 p-6 shadow-sm sm:p-8">
+              <h2 className="text-2xl font-bold text-gray-950">Join the community</h2>
+              <p className="mt-3 text-sm leading-6 text-gray-600">
+                Follow menu drops, kitchen stories, and customer favorites across our
+                active social channels.
+              </p>
+              <div className="mt-auto flex flex-wrap gap-3 pt-6">
+                <Link
+                  href="https://instagram.com"
+                  className="rounded-md bg-gray-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-950"
+                >
+                  Instagram
+                </Link>
+                <Link
+                  href="https://tiktok.com"
+                  className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-800 transition hover:border-gray-800"
+                >
+                  TikTok
+                </Link>
+              </div>
+            </section>
+
+            <section className="rounded-lg border border-gray-200 bg-gray-50 p-6 shadow-sm sm:p-8">
+              <h2 className="text-2xl font-bold text-gray-950">Recipes & food stories</h2>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+                {blogPosts.map((post) => (
+                  <Link
+                    key={post}
+                    href="/blog"
+                    className="rounded-md border border-gray-200 bg-white p-4 text-sm font-semibold text-gray-800 transition hover:border-gray-600"
+                  >
+                    {post}
+                  </Link>
+                ))}
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section className="py-8">
+          <div className="mb-8 flex items-end justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-gray-600">
+                Trust & Convenience
+              </p>
+              <h2 className="mt-2 text-3xl font-bold text-gray-950">
+                Clear delivery, payment, and dietary signals
+              </h2>
+            </div>
+            <Clock3 className="hidden h-10 w-10 text-gray-700 sm:block" aria-hidden="true" />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {trustBadges.map((badge) => {
+              const Icon = badge.icon;
+
+              return (
+                <div
+                  key={badge.label}
+                  className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm"
+                >
+                  <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-gray-200 text-gray-800">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <span className="text-sm font-semibold text-gray-800">{badge.label}</span>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      </main>
+    </>
   );
 }

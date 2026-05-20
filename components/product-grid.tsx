@@ -10,14 +10,14 @@ export function ProductGrid({ foods }: ProductGridProps) {
     <section id="featured" className="py-14" aria-label="Featured and best-selling foods">
       <div className="mb-8 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-gray-600">
+          <p className="text-sm font-semibold uppercase tracking-wide text-[#6E7A5E]">
             Featured & Best-Selling
           </p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-950 sm:text-4xl">
+          <h2 className="mt-2 text-3xl font-bold text-[#2B241E] sm:text-4xl">
             Trending from the kitchen
           </h2>
         </div>
-        <p className="max-w-xl text-sm leading-6 text-gray-600">
+        <p className="max-w-xl text-sm leading-6 text-[#62584B]">
           Customer favorites with quick add-to-cart actions for fast weekday ordering.
         </p>
       </div>

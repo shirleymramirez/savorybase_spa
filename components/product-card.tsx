@@ -9,12 +9,12 @@ interface ProductCardProps {
 
 export function ProductCard({ food }: ProductCardProps) {
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-gray-50 shadow-sm transition hover:-translate-y-1 hover:border-gray-600 hover:shadow-md">
+    <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-[#D8CDBB] bg-[#FAF7EF] shadow-sm transition hover:-translate-y-1 hover:border-[#8A6F4D] hover:shadow-md">
       <Link
         href={`/${food.slug}`}
-        className="block focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2"
+        className="block focus:outline-none focus:ring-2 focus:ring-[#6E7A5E] focus:ring-offset-2"
       >
-        <div className="relative aspect-[4/3] bg-gray-200">
+        <div className="relative aspect-[4/3] bg-[#EFE7D8]">
           <Image
             src={food.image.url}
             alt={food.image.alt}
@@ -28,20 +28,20 @@ export function ProductCard({ food }: ProductCardProps) {
         <div className="flex items-start justify-between gap-4">
           <Link
             href={`/${food.slug}`}
-            className="focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2"
+            className="focus:outline-none focus:ring-2 focus:ring-[#6E7A5E] focus:ring-offset-2"
           >
-            <h2 className="text-lg font-bold leading-6 text-gray-950">{food.title}</h2>
+            <h2 className="text-lg font-bold leading-6 text-[#2B241E]">{food.title}</h2>
           </Link>
-          <p className="shrink-0 text-base font-semibold text-gray-800">
+          <p className="shrink-0 text-base font-semibold text-[#6E4F35]">
             {food.price}
           </p>
         </div>
-        <p className="mt-3 line-clamp-3 flex-1 text-sm leading-6 text-gray-600">
+        <p className="mt-3 line-clamp-3 flex-1 text-sm leading-6 text-[#62584B]">
           {food.description}
         </p>
         <button
           type="button"
-          className="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-md bg-gray-800 px-4 text-sm font-semibold text-white transition hover:bg-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2"
+          className="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-md bg-[#D9C7A7] px-4 text-sm font-semibold text-[#2B241E] transition hover:bg-[#CBB58F] focus:outline-none focus:ring-2 focus:ring-[#6E7A5E] focus:ring-offset-2"
         >
           <Plus className="h-4 w-4" aria-hidden="true" />
           Add to Cart

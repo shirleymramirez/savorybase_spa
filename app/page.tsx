@@ -11,7 +11,6 @@ import {
   WheatOff
 } from "lucide-react";
 import { ProductGrid } from "@/components/product-grid";
-import { getFoods } from "@/lib/cms";
 
 const heroSlides = [
   {
@@ -91,9 +90,7 @@ const blogPosts = [
   "Behind the menu: bright citrus, slow-roasted aromatics, and fresh herbs"
 ];
 
-export default async function Home() {
-  const foods = await getFoods();
-
+export default function Home() {
   return (
     <>
       <section className="relative min-h-[calc(100vh-132px)] overflow-hidden bg-[#F4F0E6] text-[#2B241E]">
@@ -189,7 +186,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <ProductGrid foods={foods} />
+        <ProductGrid />
 
         <section className="py-14" aria-labelledby="social-proof-heading">
           <div className="rounded-lg border border-[#D8CDBB] bg-[#FAF7EF] p-6 shadow-sm sm:p-8">

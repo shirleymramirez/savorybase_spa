@@ -2,13 +2,15 @@
 
 Responsive e-commerce storefront built with Next.js App Router, React, TypeScript, and Tailwind CSS.
 
-## CMS setup
+## Foods API setup
 
-Set `SAVORY_BASE_CMS_URL` to the Savory Base CMS products endpoint. If the endpoint requires a bearer token, set `SAVORY_BASE_CMS_TOKEN`.
+The storefront fetches menu data from its internal `GET /api/foods` route. Set
+`SAVORY_BASE_API_URL` to the upstream foods endpoint that route should proxy. If
+the endpoint requires a bearer token, set `SAVORY_BASE_API_TOKEN`.
 
 ```bash
-SAVORY_BASE_CMS_URL="https://your-cms.example.com/api/foods"
-SAVORY_BASE_CMS_TOKEN="optional-token"
+SAVORY_BASE_API_URL="https://your-api.example.com/api/foods"
+SAVORY_BASE_API_TOKEN="optional-token"
 ```
 
 The app accepts array payloads, `{ "data": [...] }`, `{ "foods": [...] }`, or `{ "products": [...] }` shapes and maps common food product fields into clean storefront types.

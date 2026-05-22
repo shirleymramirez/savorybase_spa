@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -91,6 +94,18 @@ const blogPosts = [
 ];
 
 export default function Home() {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  function selectCategory(categoryName: string | null) {
+    setSelectedCategory(categoryName);
+    window.requestAnimationFrame(() => {
+      document.getElementById("featured")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+  }
+
   return (
     <>
       <section className="relative min-h-[calc(100vh-132px)] overflow-hidden bg-[#F4F0E6] text-[#2B241E]">
@@ -103,7 +118,7 @@ export default function Home() {
               fill
               priority={index === 0}
               sizes="100vw"
-              className={`object-cover ${index === 0 ? "opacity-20" : "opacity-0"}`}
+              className={`object-cover ${index === 0 ? "opacity-90" : "opacity-0"}`}
             />
           ))}
           <div className="absolute inset-0 bg-[#F4F0E6]/80" />
@@ -111,14 +126,13 @@ export default function Home() {
 
         <div className="relative mx-auto flex min-h-[calc(100vh-132px)] max-w-7xl flex-col justify-center px-4 py-16 sm:px-6 lg:px-8">
           <p className="text-sm font-semibold uppercase tracking-wide text-[#6E7A5E]">
-            Fresh delivery from Phoenix
+            Pickup from Chandler or delivery in the Phoenix metro area.
           </p>
           <h1 className="mt-4 max-w-4xl text-5xl font-bold leading-tight sm:text-6xl lg:text-7xl">
-            Filipino favorites and meal-ready staples, delivered fast.
+            Filipino comfort food, ready to cook at home.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-[#4F463B]">
-            Order comforting dishes, fresh sides, and pantry-ready bases with clear
-            dietary labels and reliable local delivery.
+            Order comforting dishes. We provide ready-to-cook Filipino staples and home-cooked favorites so you can enjoy authentic flavors with ease.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
@@ -158,17 +172,37 @@ export default function Home() {
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-6 text-[#62584B]">
-              Tap into appetizers, mains, desserts, and beverages with image-led
+              Tap into appetizers, main courses, desserts, and beverages with image-led
               categories sized for desktop and mobile browsing.
             </p>
           </div>
 
+          <div className="mb-4 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => selectCategory(null)}
+              className={`rounded-md border px-4 py-2 text-sm font-semibold transition ${
+                selectedCategory === null
+                  ? "border-[#6E7A5E] bg-[#C7D3B5] text-[#2B241E]"
+                  : "border-[#D8CDBB] bg-[#FAF7EF] text-[#4F463B] hover:border-[#8A6F4D]"
+              }`}
+            >
+              All
+            </button>
+          </div>
+
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {categories.map((category) => (
-              <Link
+              <button
                 key={category.name}
-                href={category.href}
-                className="group relative aspect-[4/3] overflow-hidden rounded-lg bg-[#EFE7D8] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6E7A5E] focus:ring-offset-2"
+                type="button"
+                onClick={() => selectCategory(category.name)}
+                aria-pressed={selectedCategory === category.name}
+                className={`group relative aspect-[4/3] overflow-hidden rounded-lg bg-[#EFE7D8] text-left shadow-sm transition focus:outline-none focus:ring-2 focus:ring-[#6E7A5E] focus:ring-offset-2 ${
+                  selectedCategory === category.name
+                    ? "ring-4 ring-[#6E7A5E]"
+                    : "hover:-translate-y-1"
+                }`}
               >
                 <Image
                   src={category.image}
@@ -181,12 +215,15 @@ export default function Home() {
                 <span className="absolute bottom-4 left-4 text-2xl font-bold text-[#FFFDF7]">
                   {category.name}
                 </span>
-              </Link>
+              </button>
             ))}
           </div>
         </section>
 
-        <ProductGrid />
+        <ProductGrid
+          selectedCategory={selectedCategory}
+          onClearCategory={() => setSelectedCategory(null)}
+        />
 
         <section className="py-14" aria-labelledby="social-proof-heading">
           <div className="rounded-lg border border-[#D8CDBB] bg-[#FAF7EF] p-6 shadow-sm sm:p-8">

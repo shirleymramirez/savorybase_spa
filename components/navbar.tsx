@@ -11,7 +11,8 @@ import {
   X
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { FoodProduct } from "@/lib/types";
 
 const navLinks = [
   { href: "/#featured", label: "Shop/Menu" },
@@ -19,22 +20,95 @@ const navLinks = [
   { href: "/deals", label: "Deals" }
 ];
 
-const searchSuggestions = [
-  "Chicken adobo",
-  "Vegan bowls",
-  "Nut-free meals",
-  "Fresh lumpia",
-  "Desserts",
-  "Family bundles"
-];
+const SEARCH_DEBOUNCE_MS = 300;
+
+interface FoodsApiResponse {
+  foods?: FoodProduct[];
+}
+
+interface SearchSuggestion {
+  title: string;
+  slug: string;
+}
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const filteredSuggestions = searchSuggestions.filter((suggestion) =>
-    suggestion.toLowerCase().includes(query.toLowerCase())
+  const [searchSuggestions, setSearchSuggestions] = useState<SearchSuggestion[]>([]);
+  const filteredSuggestions = useMemo(
+    () =>
+      searchSuggestions.filter((suggestion) =>
+        suggestion.title.toLowerCase().includes(debouncedQuery.toLowerCase())
+      ),
+    [debouncedQuery, searchSuggestions]
   );
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setDebouncedQuery(query.trim());
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [query]);
+
+  useEffect(() => {
+    if (!isSearchOpen) {
+      return;
+    }
+
+    const controller = new AbortController();
+
+    async function fetchSearchSuggestions() {
+      try {
+        const response = await fetch("/api/foods", {
+          method: "GET",
+          headers: {
+            Accept: "application/json"
+          },
+          signal: controller.signal
+        });
+
+        if (!response.ok) {
+          throw new Error(`Unable to load search suggestions: ${response.status}`);
+        }
+
+        const payload = (await response.json()) as FoodsApiResponse | FoodProduct[];
+        const foods = Array.isArray(payload) ? payload : payload.foods ?? [];
+        const uniqueSuggestionTitles = new Set<string>();
+        const nextSuggestions = foods.reduce<SearchSuggestion[]>((suggestions, food) => {
+          if (!food.title || uniqueSuggestionTitles.has(food.title)) {
+            return suggestions;
+          }
+
+          uniqueSuggestionTitles.add(food.title);
+          suggestions.push({
+            title: food.title,
+            slug: food.slug
+          });
+
+          return suggestions;
+        }, []);
+
+        setSearchSuggestions(nextSuggestions);
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
+        }
+
+        console.error(error);
+      }
+    }
+
+    fetchSearchSuggestions();
+
+    return () => {
+      controller.abort();
+    };
+  }, [debouncedQuery, isSearchOpen]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#D8CDBB] bg-[#FAF7EF]/95 backdrop-blur">
@@ -77,7 +151,7 @@ export function Navbar() {
             }}
             onFocus={() => setIsSearchOpen(true)}
             onBlur={() => window.setTimeout(() => setIsSearchOpen(false), 120)}
-            placeholder="Search dishes, ingredients, dietary tags"
+            placeholder="Search products"
             className="h-11 w-full rounded-md border border-[#D8CDBB] bg-[#FFFDF7] pl-10 pr-4 text-sm font-medium text-[#2B241E] outline-none transition placeholder:text-[#7A6E5E] focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
             aria-label="Search menu"
           />
@@ -86,14 +160,15 @@ export function Navbar() {
               {(filteredSuggestions.length > 0 ? filteredSuggestions : searchSuggestions)
                 .slice(0, 5)
                 .map((suggestion) => (
-                  <button
-                    key={suggestion}
-                    type="button"
+                  <Link
+                    key={suggestion.slug}
+                    href={`/${suggestion.slug}`}
                     className="block w-full px-4 py-3 text-left text-sm font-semibold text-[#62584B] transition hover:bg-[#EFE7D8] hover:text-[#2B241E]"
-                    onMouseDown={() => setQuery(suggestion)}
+                    onMouseDown={() => setQuery(suggestion.title)}
+                    onClick={() => setIsSearchOpen(false)}
                   >
-                    {suggestion}
-                  </button>
+                    {suggestion.title}
+                  </Link>
                 ))}
             </div>
           ) : null}

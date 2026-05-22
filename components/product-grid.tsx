@@ -10,9 +10,17 @@ interface FoodsApiResponse {
   foods?: FoodProduct[];
 }
 
-export function ProductGrid() {
+interface ProductGridProps {
+  selectedCategory: string | null;
+  onClearCategory: () => void;
+}
+
+export function ProductGrid({ selectedCategory, onClearCategory }: ProductGridProps) {
   const [foods, setFoods] = useState<FoodProduct[]>([]);
   const [status, setStatus] = useState<MenuStatus>("idle");
+  const filteredFoods = selectedCategory
+    ? foods.filter((food) => foodMatchesCategory(food, selectedCategory))
+    : foods;
 
   useEffect(() => {
     let isMounted = true;
@@ -57,13 +65,26 @@ export function ProductGrid() {
 
   return (
     <section id="featured" className="py-14" aria-label="Featured and best-selling foods">
-      <ProductGridHeader />
-      <ProductGridContent foods={foods} status={status} />
+      <ProductGridHeader
+        selectedCategory={selectedCategory}
+        onClearCategory={onClearCategory}
+      />
+      <ProductGridContent
+        foods={filteredFoods}
+        status={status}
+        selectedCategory={selectedCategory}
+      />
     </section>
   );
 }
 
-function ProductGridHeader() {
+function ProductGridHeader({
+  selectedCategory,
+  onClearCategory
+}: {
+  selectedCategory: string | null;
+  onClearCategory: () => void;
+}) {
   return (
     <div className="mb-8 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
       <div>
@@ -75,18 +96,31 @@ function ProductGridHeader() {
         </h2>
       </div>
       <p className="max-w-xl text-sm leading-6 text-[#62584B]">
-        Customer favorites with quick add-to-cart actions for fast weekday ordering.
+        {selectedCategory
+          ? `Showing ${selectedCategory.toLowerCase()} from the live menu.`
+          : "Customer favorites."}
       </p>
+      {selectedCategory ? (
+        <button
+          type="button"
+          onClick={onClearCategory}
+          className="inline-flex w-fit rounded-md border border-[#8A6F4D] px-4 py-2 text-sm font-semibold text-[#4F463B] transition hover:bg-[#EFE7D8] hover:text-[#2B241E]"
+        >
+          Show all
+        </button>
+      ) : null}
     </div>
   );
 }
 
 function ProductGridContent({
   foods,
-  status
+  status,
+  selectedCategory
 }: {
   foods: FoodProduct[];
   status: MenuStatus;
+  selectedCategory: string | null;
 }) {
   if (status === "loading" || status === "idle") {
     return (
@@ -112,7 +146,9 @@ function ProductGridContent({
   if (foods.length === 0) {
     return (
       <div className="rounded-lg border border-[#D8CDBB] bg-[#FAF7EF] p-6 text-sm font-semibold text-[#4F463B]">
-        No menu items are available yet.
+        {selectedCategory
+          ? `No menu items are available for ${selectedCategory.toLowerCase()} yet.`
+          : "No menu items are available yet."}
       </div>
     );
   }
@@ -124,4 +160,27 @@ function ProductGridContent({
       ))}
     </div>
   );
+}
+
+function foodMatchesCategory(food: FoodProduct, selectedCategory: string) {
+  const selectedTerms = getCategoryTerms(selectedCategory);
+  const foodCategories = food.categories.map(normalizeCategory);
+
+  return selectedTerms.some((term) => foodCategories.includes(term));
+}
+
+function getCategoryTerms(category: string) {
+  const normalized = normalizeCategory(category);
+  const categoryAliases: Record<string, string[]> = {
+    appetizers: ["appetizers", "appetizer"],
+    mains: ["mains", "main", "maincourse"],
+    desserts: ["desserts", "dessert"],
+    beverages: ["beverages", "beverage", "drinks", "drink"]
+  };
+
+  return categoryAliases[normalized] ?? [normalized];
+}
+
+function normalizeCategory(category: string) {
+  return category.toLowerCase().replace(/[^a-z0-9]/g, "");
 }

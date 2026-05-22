@@ -9,6 +9,7 @@ export interface FoodProduct {
   slug: string;
   price: string;
   description: string;
+  categories: string[];
   image: FoodImage;
 }
 

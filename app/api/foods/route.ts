@@ -97,6 +97,7 @@ function mapApiFood(item: SavoryBaseApiFood): FoodProduct | null {
     slug,
     price: formatPrice(item.price),
     description: item.description ?? "A flavorful Savory Base favorite.",
+    categories: item.categories ?? [],
     image
   };
 }

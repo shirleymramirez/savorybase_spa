@@ -151,14 +151,14 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="overflow-hidden border-y border-[#6E7A5E] bg-[#3F4A36] py-3 text-sm font-semibold text-[#FAF7EF]">
+      {/* <div className="overflow-hidden border-y border-[#6E7A5E] bg-[#3F4A36] py-3 text-sm font-semibold text-[#FAF7EF]">
         <div className="flex min-w-max animate-promo gap-10 px-4">
           <span>Limited time: 15% off family bundles</span>
           <span>Free delivery on orders over $35</span>
           <span>New vegan and nut-free picks added weekly</span>
           <span>Order by 3 PM for dinner-window delivery</span>
         </div>
-      </div>
+      </div> */}
 
       <main className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <section id="categories" className="py-8">

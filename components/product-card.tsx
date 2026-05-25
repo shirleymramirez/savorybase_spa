@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Plus } from "lucide-react";
 import type { FoodProduct } from "@/lib/types";
+import { AddToCartButton } from "@/components/add-to-cart-button";
 
 interface ProductCardProps {
   food: FoodProduct;
@@ -39,13 +39,7 @@ export function ProductCard({ food }: ProductCardProps) {
         <p className="mt-3 line-clamp-3 flex-1 text-sm leading-6 text-[#62584B]">
           {food.description}
         </p>
-        <button
-          type="button"
-          className="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-md bg-[#D9C7A7] px-4 text-sm font-semibold text-[#2B241E] transition hover:bg-[#CBB58F] focus:outline-none focus:ring-2 focus:ring-[#6E7A5E] focus:ring-offset-2"
-        >
-          <Plus className="h-4 w-4" aria-hidden="true" />
-          Add to Cart
-        </button>
+        <AddToCartButton food={food} />
       </div>
     </article>
   );

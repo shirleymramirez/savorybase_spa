@@ -3,9 +3,9 @@ import Link from "next/link";
 export default function DealsPage() {
   return (
     <main className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
-      <p className="text-sm font-semibold uppercase tracking-wide text-[#6E7A5E]">
+      {/* <p className="text-sm font-semibold uppercase tracking-wide text-[#6E7A5E]">
         Deals
-      </p>
+      </p> */}
       <h1 className="mt-3 text-4xl font-bold text-[#2B241E]">Today&apos;s offers</h1>
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         {["15% off family bundles", "Free delivery over $35"].map((deal) => (

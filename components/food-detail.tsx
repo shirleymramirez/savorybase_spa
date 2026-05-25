@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ShoppingCart } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { FoodProduct } from "@/lib/types";
+import { AddToCartButton } from "@/components/add-to-cart-button";
 
 type DetailStatus = "idle" | "loading" | "success" | "error";
 
@@ -126,10 +127,7 @@ export function FoodDetail({ foodName }: FoodDetailProps) {
           {food.description}
         </p>
 
-        <button className="mt-9 inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#D9C7A7] px-6 py-3 text-base font-semibold text-[#2B241E] transition hover:bg-[#CBB58F] sm:w-fit">
-          <ShoppingCart className="h-5 w-5" aria-hidden="true" />
-          Add to Cart
-        </button>
+        <AddToCartButton food={food} size="detail" />
       </div>
     </article>
   );

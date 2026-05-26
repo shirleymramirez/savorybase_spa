@@ -121,17 +121,17 @@ export default function Home() {
               className={`object-cover ${index === 0 ? "opacity-90" : "opacity-0"}`}
             />
           ))}
-          <div className="absolute inset-0 bg-[#F4F0E6]/80" />
+          <div className="absolute inset-0 bg-[#F4F0E6]/45" />
         </div>
 
         <div className="relative mx-auto flex min-h-[calc(100vh-132px)] max-w-7xl flex-col justify-center px-4 py-16 sm:px-6 lg:px-8">
-          <p className="text-sm font-semibold uppercase tracking-wide text-[#6E7A5E]">
+          <p className="text-sm font-semibold uppercase tracking-wide text-[#4B5340]">
             Pickup from Chandler or delivery in the Phoenix metro area.
           </p>
           <h1 className="mt-4 max-w-4xl text-5xl font-bold leading-tight sm:text-6xl lg:text-7xl">
             Filipino comfort food, ready to cook at home.
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-[#4F463B]">
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-[#3F382F]">
             Order comforting dishes. We provide ready-to-cook Filipino staples and home-cooked favorites so you can enjoy authentic flavors with ease.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">

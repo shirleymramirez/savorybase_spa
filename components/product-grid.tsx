@@ -18,9 +18,10 @@ interface ProductGridProps {
 export function ProductGrid({ selectedCategory, onClearCategory }: ProductGridProps) {
   const [foods, setFoods] = useState<FoodProduct[]>([]);
   const [status, setStatus] = useState<MenuStatus>("idle");
+  const activeFoods = foods.filter(isActiveFood);
   const filteredFoods = selectedCategory
-    ? foods.filter((food) => foodMatchesCategory(food, selectedCategory))
-    : foods;
+    ? activeFoods.filter((food) => foodMatchesCategory(food, selectedCategory))
+    : activeFoods;
 
   useEffect(() => {
     let isMounted = true;
@@ -183,4 +184,8 @@ function getCategoryTerms(category: string) {
 
 function normalizeCategory(category: string) {
   return category.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function isActiveFood(food: FoodProduct) {
+  return food.active === true;
 }

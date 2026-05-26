@@ -10,6 +10,7 @@ export interface FoodProduct {
   price: string;
   description: string;
   categories: string[];
+  active?: boolean;
   image: FoodImage;
 }
 
@@ -23,6 +24,7 @@ export interface SavoryBaseApiFood {
   price?: string | number;
   description?: string;
   categories?: string[];
+  active?: boolean;
   image?: string | FoodImage | { url?: string; alt?: string; alternativeText?: string };
   productImage?: string | FoodImage | { url?: string; alt?: string; alternativeText?: string };
   imageUrl?: string;

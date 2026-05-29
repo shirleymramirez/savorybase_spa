@@ -225,7 +225,7 @@ export default function Home() {
           onClearCategory={() => setSelectedCategory(null)}
         />
 
-        <section className="py-14" aria-labelledby="social-proof-heading">
+        {/* <section className="py-14" aria-labelledby="social-proof-heading">
           <div className="rounded-lg border border-[#D8CDBB] bg-[#FAF7EF] p-6 shadow-sm sm:p-8">
             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -294,9 +294,9 @@ export default function Home() {
               </div>
             </section>
           </div>
-        </section>
+        </section> */}
 
-        <section className="py-8">
+        {/* <section className="py-8">
           <div className="mb-8 flex items-end justify-between gap-4">
             <div>
               <p className="text-sm font-semibold uppercase tracking-wide text-[#6E7A5E]">
@@ -325,7 +325,7 @@ export default function Home() {
               );
             })}
           </div>
-        </section>
+        </section> */}
       </main>
     </>
   );

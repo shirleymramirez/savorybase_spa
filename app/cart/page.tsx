@@ -181,12 +181,12 @@ export default function CartPage() {
             </div>
           </dl>
 
-          <button
-            type="button"
+          <Link
+            href="/checkout"
             className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-md bg-[#D9C7A7] px-5 text-base font-semibold text-[#2B241E] transition hover:bg-[#CBB58F] focus:outline-none focus:ring-2 focus:ring-[#6E7A5E] focus:ring-offset-2"
           >
             Checkout
-          </button>
+          </Link>
           <p className="mt-4 text-sm leading-6 text-[#62584B]">
             Delivery, pickup window, and final taxes are confirmed during checkout.
           </p>

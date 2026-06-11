@@ -67,7 +67,7 @@ export default function CheckoutPage() {
                 <input
                   type="email"
                   defaultValue="guest@example.com"
-                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
                 />
               </label>
               <label className="grid gap-2 text-sm font-semibold text-[#2B241E]">
@@ -75,7 +75,7 @@ export default function CheckoutPage() {
                 <input
                   type="tel"
                   defaultValue="(555) 012-3456"
-                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
                 />
               </label>
             </div>
@@ -92,7 +92,7 @@ export default function CheckoutPage() {
                 <input
                   type="text"
                   defaultValue="Jordan Rivera"
-                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
                 />
               </label>
               <label className="grid gap-2 text-sm font-semibold text-[#2B241E] sm:col-span-2">
@@ -100,7 +100,7 @@ export default function CheckoutPage() {
                 <textarea
                   rows={3}
                   defaultValue="123 Market Street, Suite 400, San Francisco, CA 94105"
-                  className="rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 py-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                  className="rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 py-3 text-sm text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
                 />
               </label>
             </div>
@@ -153,7 +153,7 @@ export default function CheckoutPage() {
                   type="text"
                   inputMode="numeric"
                   defaultValue="4242 4242 4242 4242"
-                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
                 />
               </label>
               <label className="grid gap-2 text-sm font-semibold text-[#2B241E]">
@@ -161,7 +161,7 @@ export default function CheckoutPage() {
                 <input
                   type="text"
                   defaultValue="05/29"
-                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
                 />
               </label>
               <label className="grid gap-2 text-sm font-semibold text-[#2B241E]">
@@ -169,7 +169,7 @@ export default function CheckoutPage() {
                 <input
                   type="password"
                   defaultValue="123"
-                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
                 />
               </label>
             </div>

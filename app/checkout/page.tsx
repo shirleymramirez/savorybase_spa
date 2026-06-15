@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { CreditCard, MapPin, ShieldCheck } from "lucide-react";
 import { useCart } from "@/components/cart-provider";
 
@@ -12,7 +13,14 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
 
 export default function CheckoutPage() {
   const { items } = useCart();
+  const router = useRouter();
   const [shippingMethod, setShippingMethod] = useState("standard");
+
+  const [email, setEmail] = useState("guest@example.com");
+  const [phone, setPhone] = useState("(555) 012-3456");
+  const [recipientName, setRecipientName] = useState("Jordan Rivera");
+  const [deliveryAddress, setDeliveryAddress] = useState("123 Market Street, Suite 400, San Francisco, CA 94105");
+  const [message, setMessage] = useState("");
 
   const subtotal = useMemo(
     () =>
@@ -44,6 +52,26 @@ export default function CheckoutPage() {
     );
   }
 
+  function handlePlaceOrder() {
+    const checkoutData = {
+      items,
+      customer: { email, phone },
+      shippingMethod,
+      recipientName,
+      deliveryAddress,
+      message,
+      totals: { subtotal, shipping, tax, grandTotal }
+    };
+
+    try {
+      sessionStorage.setItem("checkoutData", JSON.stringify(checkoutData));
+    } catch (e) {
+      console.error("Failed to save checkout data to sessionStorage", e);
+    }
+
+    router.push("/checkout/summary");
+  }
+
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8 flex flex-col gap-2">
@@ -66,16 +94,18 @@ export default function CheckoutPage() {
                 Email address
                 <input
                   type="email"
-                  defaultValue="guest@example.com"
-                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
                 />
               </label>
               <label className="grid gap-2 text-sm font-semibold text-[#2B241E]">
                 Phone number
                 <input
                   type="tel"
-                  defaultValue="(555) 012-3456"
-                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
                 />
               </label>
             </div>
@@ -91,42 +121,30 @@ export default function CheckoutPage() {
                 Recipient name
                 <input
                   type="text"
-                  defaultValue="Jordan Rivera"
-                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                  value={recipientName}
+                  onChange={(e) => setRecipientName(e.target.value)}
+                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
                 />
               </label>
               <label className="grid gap-2 text-sm font-semibold text-[#2B241E] sm:col-span-2">
                 Delivery address
                 <textarea
                   rows={3}
-                  defaultValue="123 Market Street, Suite 400, San Francisco, CA 94105"
-                  className="rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 py-3 text-sm text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                  value={deliveryAddress}
+                  onChange={(e) => setDeliveryAddress(e.target.value)}
+                  className="rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 py-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
                 />
               </label>
-            </div>
-
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {[
-                { id: "standard", label: "Standard delivery", detail: "Scheduled in 3–5 business days", price: 6.99 },
-                { id: "express", label: "Express delivery", detail: "Priority arrival in 1–2 business days", price: 12.99 }
-              ].map((option) => (
-                <button
-                  key={option.id}
-                  type="button"
-                  onClick={() => setShippingMethod(option.id)}
-                  className={`rounded-lg border p-4 text-left transition ${
-                    shippingMethod === option.id
-                      ? "border-[#6E7A5E] bg-[#EFF3EA]"
-                      : "border-[#D8CDBB] bg-[#FAF7EF] hover:border-[#C7D3B5]"
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm font-semibold text-[#2B241E]">{option.label}</p>
-                    <span className="text-sm font-bold text-[#2B241E]">{currencyFormatter.format(option.price)}</span>
-                  </div>
-                  <p className="mt-1 text-sm text-[#62584B]">{option.detail}</p>
-                </button>
-              ))}
+              <label className="grid gap-2 text-sm font-semibold text-[#2B241E] sm:col-span-2">
+                Message
+                <textarea
+                  rows={3}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Add a message for the delivery"
+                  className="rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 py-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                />
+              </label>
             </div>
           </article>
 
@@ -135,9 +153,9 @@ export default function CheckoutPage() {
               <CreditCard className="h-5 w-5 text-[#6E7A5E]" aria-hidden="true" />
               <h2 className="text-xl font-bold text-[#2B241E]">Payment method</h2>
             </div>
-            <p className="mt-2 text-sm text-[#62584B]">Choose a secure payment option. This demo uses a protected checkout form.</p>
+            <p className="mt-2 text-sm text-[#62584B]">Payment can be made with any of the following methods:</p>
             <div className="mt-5 flex flex-wrap gap-3">
-              {['Credit / Debit Card', 'Apple Pay', 'Google Pay'].map((method) => (
+              {['Cash', 'Zelle', 'Apple Pay', 'Google Pay'].map((method) => (
                 <span
                   key={method}
                   className="rounded-full border border-[#D8CDBB] bg-[#FAF7EF] px-3 py-2 text-sm font-semibold text-[#4F463B]"
@@ -145,33 +163,6 @@ export default function CheckoutPage() {
                   {method}
                 </span>
               ))}
-            </div>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <label className="grid gap-2 text-sm font-semibold text-[#2B241E] sm:col-span-2">
-                Card number
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  defaultValue="4242 4242 4242 4242"
-                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
-                />
-              </label>
-              <label className="grid gap-2 text-sm font-semibold text-[#2B241E]">
-                Expiry date
-                <input
-                  type="text"
-                  defaultValue="05/29"
-                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
-                />
-              </label>
-              <label className="grid gap-2 text-sm font-semibold text-[#2B241E]">
-                Security code
-                <input
-                  type="password"
-                  defaultValue="123"
-                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
-                />
-              </label>
             </div>
           </article>
         </section>
@@ -212,12 +203,12 @@ export default function CheckoutPage() {
             </div>
           </dl>
 
-          <Link
-            href="/checkout/confirmation"
+          <button
+            onClick={handlePlaceOrder}
             className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-md bg-[#D9C7A7] px-5 text-base font-semibold text-[#2B241E] transition hover:bg-[#CBB58F] focus:outline-none focus:ring-2 focus:ring-[#6E7A5E] focus:ring-offset-2"
           >
             Place order
-          </Link>
+          </button>
           <p className="mt-3 text-xs text-[#62584B]">By placing your order, you agree to our secure checkout terms and delivery policies.</p>
         </aside>
       </div>

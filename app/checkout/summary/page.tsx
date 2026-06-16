@@ -105,7 +105,7 @@ export default function CheckoutSummaryPage() {
         </div>
 
         {error && <p className="mt-4 text-sm text-red-600">Error: {error}</p>}
-        {sent && <p className="mt-4 text-sm text-green-700">Order sent to shirley.mramirez@yahoo.com</p>}
+        {sent && <p className="mt-4 text-sm text-green-700">Order Successfuly Sent!</p>}
       </section>
     </main>
   );

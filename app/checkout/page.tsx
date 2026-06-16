@@ -32,7 +32,8 @@ export default function CheckoutPage() {
   );
   const shipping = subtotal > 0 ? (shippingMethod === "express" ? 12.99 : 6.99) : 0;
   const tax = subtotal * 0.086;
-  const grandTotal = subtotal + shipping + tax;
+  // const grandTotal = subtotal + shipping + tax;
+  const grandTotal = subtotal;
 
   if (items.length === 0) {
     return (
@@ -60,7 +61,8 @@ export default function CheckoutPage() {
       recipientName,
       deliveryAddress,
       message,
-      totals: { subtotal, shipping, tax, grandTotal }
+      // totals: { subtotal, shipping, tax, grandTotal }
+      totals: { subtotal, shipping: 0, tax: 0, grandTotal }
     };
 
     try {
@@ -189,14 +191,14 @@ export default function CheckoutPage() {
               <dt>Subtotal</dt>
               <dd className="font-semibold text-[#2B241E]">{currencyFormatter.format(subtotal)}</dd>
             </div>
-            <div className="flex items-center justify-between gap-4">
+            {/* <div className="flex items-center justify-between gap-4">
               <dt>Shipping</dt>
               <dd className="font-semibold text-[#2B241E]">{currencyFormatter.format(shipping)}</dd>
             </div>
             <div className="flex items-center justify-between gap-4">
               <dt>Taxes</dt>
               <dd className="font-semibold text-[#2B241E]">{currencyFormatter.format(tax)}</dd>
-            </div>
+            </div> */}
             <div className="flex items-center justify-between gap-4 border-t border-[#D8CDBB] pt-4 text-base">
               <dt className="font-bold text-[#2B241E]">Grand total</dt>
               <dd className="font-bold text-[#2B241E]">{currencyFormatter.format(grandTotal)}</dd>

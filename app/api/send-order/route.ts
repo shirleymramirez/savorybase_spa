@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
 
 type Checkout = any;
 
@@ -9,12 +10,18 @@ export async function POST(request: Request) {
   }
 
   const checkout: Checkout = body.checkout;
+  const gmailUser = process.env.GMAIL_USER;
+  const gmailPass = process.env.GMAIL_PASS;
+  const recipient = "jheilhet@gmail.com";
 
-  const sendgridKey = process.env.SENDGRID_API_KEY;
-  const sender = process.env.SENDER_EMAIL || process.env.NEXT_PUBLIC_SENDER_EMAIL;
-  const recipient = "shirley.mramirez@yahoo.com";
-
-  const subject = `New order from ${checkout.customer?.email || "guest"}`;
+  if (!gmailUser || !gmailPass) {
+    return NextResponse.json(
+      {
+        error: "Gmail is not configured. Set GMAIL_USER and GMAIL_PASS environment variables to enable email sending."
+      },
+      { status: 500 }
+    );
+  }
 
   function buildHtml(checkout: Checkout) {
     let itemsHtml = "";
@@ -23,49 +30,52 @@ export async function POST(request: Request) {
     }
 
     return `
-      <h1>New order</h1>
-      <p><strong>Customer:</strong> ${checkout.customer?.email || ""} (${checkout.customer?.phone || ""})</p>
-      <p><strong>Recipient:</strong> ${checkout.recipientName || ""}</p>
-      <p><strong>Address:</strong> ${checkout.deliveryAddress || ""}</p>
-      <p><strong>Message:</strong> ${checkout.message || ""}</p>
-      <h2>Items</h2>
-      <ul>${itemsHtml}</ul>
-      <h3>Totals</h3>
-      <p>Subtotal: $${(checkout.totals?.subtotal ?? 0).toFixed(2)}</p>
-      <p>Shipping: $${(checkout.totals?.shipping ?? 0).toFixed(2)}</p>
-      <p>Tax: $${(checkout.totals?.tax ?? 0).toFixed(2)}</p>
-      <p><strong>Grand total: $${(checkout.totals?.grandTotal ?? 0).toFixed(2)}</strong></p>
+      <h1>New Order from SavoryBase</h1>
+      <h2>Customer Information</h2>
+      <p><strong>Email:</strong> ${checkout.customer?.email || "N/A"}</p>
+      <p><strong>Phone:</strong> ${checkout.customer?.phone || "N/A"}</p>
+      
+      <h2>Recipient & Delivery</h2>
+      <p><strong>Recipient Name:</strong> ${checkout.recipientName || "N/A"}</p>
+      <p><strong>Delivery Address:</strong> ${checkout.deliveryAddress || "N/A"}</p>
+      <p><strong>Special Message:</strong> ${checkout.message || "None"}</p>
+      
+      <h2>Items Ordered</h2>
+      <ul>${itemsHtml || "<li>No items</li>"}</ul>
+      
+      <h2>Order Totals</h2>
+      <p><strong>Subtotal:</strong> $${(checkout.totals?.subtotal ?? 0).toFixed(2)}</p>
+      <p><strong>Shipping:</strong> $${(checkout.totals?.shipping ?? 0).toFixed(2)}</p>
+      <p><strong>Tax:</strong> $${(checkout.totals?.tax ?? 0).toFixed(2)}</p>
+      <p style="font-size: 1.2em;"><strong>Grand Total:</strong> $${(checkout.totals?.grandTotal ?? 0).toFixed(2)}</p>
     `;
   }
 
-  if (!sendgridKey || !sender) {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: gmailUser,
+        pass: gmailPass
+      }
+    });
+
+    const mailOptions = {
+      from: gmailUser,
+      to: recipient,
+      subject: `New Order from ${checkout.customer?.email || "SavoryBase Customer"}`,
+      html: buildHtml(checkout),
+      text: `New order from ${checkout.customer?.email || "guest"}\n\n${JSON.stringify(checkout, null, 2)}`
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return NextResponse.json({ ok: true, message: `Order sent to ${recipient}` });
+  } catch (err: any) {
+    console.error("send-order error:", err);
     return NextResponse.json(
-      {
-        error:
-          "SendGrid is not configured. Set SENDGRID_API_KEY and SENDER_EMAIL environment variables to enable server-side emailing."
-      },
+      { error: err?.message || String(err) },
       { status: 500 }
     );
-  }
-
-  try {
-    // Dynamically import @sendgrid/mail so the app can run without the package if not used
-    const sg = await import("@sendgrid/mail");
-    sg.setApiKey(sendgridKey);
-
-    const msg = {
-      to: recipient,
-      from: sender,
-      subject,
-      text: `New order from ${checkout.customer?.email || "guest"}\n\n` + JSON.stringify(checkout, null, 2),
-      html: buildHtml(checkout)
-    } as any;
-
-    await sg.send(msg);
-
-    return NextResponse.json({ ok: true });
-  } catch (err: any) {
-    console.error("send-order error", err);
-    return NextResponse.json({ error: err?.message || String(err) }, { status: 500 });
   }
 }

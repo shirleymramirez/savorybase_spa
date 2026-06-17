@@ -8,6 +8,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ food }: ProductCardProps) {
+  console.log("ProductCard render", { food });
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-[#D8CDBB] bg-[#FAF7EF] shadow-sm transition hover:-translate-y-1 hover:border-[#8A6F4D] hover:shadow-md">
       <Link

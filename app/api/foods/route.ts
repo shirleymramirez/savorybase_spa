@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { slugify } from "@/lib/slug";
-import type { FoodImage, FoodProduct, SavoryBaseApiFood } from "@/lib/types";
+import type { CmsFoodImage, FoodProduct, SavoryBaseCmsFood } from "@/lib/types";
 
 export async function GET() {
   try {
@@ -45,39 +45,39 @@ async function fetchFoods(): Promise<FoodProduct[]> {
   return normalizeCollection(payload).map(mapApiFood).filter(isFoodProduct);
 }
 
-function normalizeCollection(payload: unknown): SavoryBaseApiFood[] {
+function normalizeCollection(payload: unknown): SavoryBaseCmsFood[] {
   if (Array.isArray(payload)) {
-    return payload as SavoryBaseApiFood[];
+    return payload as SavoryBaseCmsFood[];
   }
 
   if (isRecord(payload)) {
-    if (Array.isArray(payload.data)) {
-      return payload.data.map((item) => {
-        if (isRecord(item) && isRecord(item.attributes)) {
-          return { id: item.id as string | number | undefined, ...item.attributes };
-        }
+    // if (Array.isArray(payload.data)) {
+    //   return payload.data.map((item) => {
+    //     if (isRecord(item) && isRecord(item.attributes)) {
+    //       return { id: item.id as string | number | undefined, ...item.attributes };
+    //     }
 
-        return item as SavoryBaseApiFood;
-      });
-    }
+    //     return item as SavoryBaseCmsFood;
+    //   });
+    // }
 
     if (isRecord(payload.data)) {
-      return [payload.data as SavoryBaseApiFood];
+      return [payload.data as SavoryBaseCmsFood];
     }
 
     if (Array.isArray(payload.foods)) {
-      return payload.foods as SavoryBaseApiFood[];
+      return payload.foods as SavoryBaseCmsFood[];
     }
 
     if (Array.isArray(payload.products)) {
-      return payload.products as SavoryBaseApiFood[];
+      return payload.products as SavoryBaseCmsFood[];
     }
   }
 
   return [];
 }
 
-function mapApiFood(item: SavoryBaseApiFood): FoodProduct | null {
+function mapApiFood(item: SavoryBaseCmsFood): FoodProduct | null {
   const title = item.title ?? item.name ?? item.foodName;
 
   if (!title) {
@@ -104,9 +104,9 @@ function mapApiFood(item: SavoryBaseApiFood): FoodProduct | null {
 }
 
 function normalizeImage(
-  image: SavoryBaseApiFood["image"],
+  image: SavoryBaseCmsFood["image"],
   title: string
-): FoodImage | null {
+): CmsFoodImage | null {
   if (typeof image === "string") {
     return {
       url: image,
@@ -131,7 +131,7 @@ function normalizeImage(
   return null;
 }
 
-function formatPrice(price: SavoryBaseApiFood["price"]) {
+function formatPrice(price: SavoryBaseCmsFood["price"]) {
   if (typeof price === "number") {
     return new Intl.NumberFormat("en-US", {
       style: "currency",

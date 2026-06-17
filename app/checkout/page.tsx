@@ -14,7 +14,7 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
 export default function CheckoutPage() {
   const { items } = useCart();
   const router = useRouter();
-  const [shippingMethod, setShippingMethod] = useState("standard");
+  // const [shippingMethod, setShippingMethod] = useState("standard");
 
   const [email, setEmail] = useState("guest@example.com");
   const [phone, setPhone] = useState("(555) 012-3456");
@@ -30,8 +30,8 @@ export default function CheckoutPage() {
       ),
     [items]
   );
-  const shipping = subtotal > 0 ? (shippingMethod === "express" ? 12.99 : 6.99) : 0;
-  const tax = subtotal * 0.086;
+  // const shipping = subtotal > 0 ? (shippingMethod === "express" ? 12.99 : 6.99) : 0;
+  // const tax = subtotal * 0.086;
   // const grandTotal = subtotal + shipping + tax;
   const grandTotal = subtotal;
 
@@ -57,7 +57,7 @@ export default function CheckoutPage() {
     const checkoutData = {
       items,
       customer: { email, phone },
-      shippingMethod,
+      // shippingMethod,
       recipientName,
       deliveryAddress,
       message,

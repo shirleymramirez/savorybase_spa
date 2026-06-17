@@ -16,7 +16,7 @@ export default function CartPage() {
     (total, item) => total + parseFoodPrice(item.food.price) * item.quantity,
     0
   );
-  const estimatedTax = subtotal * 0.086;
+  // const estimatedTax = subtotal * 0.086;
   // const estimatedTotal = subtotal + estimatedTax;
     const estimatedTotal = subtotal;
 

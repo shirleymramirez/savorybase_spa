@@ -29,7 +29,7 @@ export default function CartPage() {
           Add a Savory Base favorite from the foods collection and it will appear here.
         </p>
         <Link
-          href="/#featured"
+          href="/#products"
           className="mt-8 rounded-md bg-[#D9C7A7] px-5 py-3 text-sm font-semibold text-[#2B241E] transition hover:bg-[#CBB58F] focus:outline-none focus:ring-2 focus:ring-[#6E7A5E] focus:ring-offset-2"
         >
           Browse Foods
@@ -48,7 +48,7 @@ export default function CartPage() {
           <h1 className="mt-2 text-4xl font-bold text-[#2B241E]">{totalQuantity} items in your cart</h1>
         </div>
         <Link
-          href="/#featured"
+          href="/#products"
           className="inline-flex h-11 w-fit items-center justify-center rounded-md border border-[#8A6F4D] px-4 text-sm font-semibold text-[#4F463B] transition hover:bg-[#EFE7D8] hover:text-[#2B241E] focus:outline-none focus:ring-2 focus:ring-[#6E7A5E] focus:ring-offset-2"
         >
           Continue shopping

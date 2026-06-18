@@ -50,14 +50,13 @@ export function HeaderSection() {
         <p className="text-sm font-semibold uppercase tracking-wide text-[#4B5340]">
           Pickup from Chandler or delivery in the Phoenix metro area.
         </p>
-        <h1 className="mt-4 max-w-4xl text-5xl font-bold leading-tight sm:text-6xl lg:text-7xl">             Filipino comfort food, ready to cook at home.
-        </h1>
+        <h1 className="mt-4 max-w-4xl font-bold leading-tight text-4xl lg:text-7xl">Filipino comfort food, ready to cook at home</h1>
         <p className="mt-6 max-w-2xl text-lg leading-8 text-[#3F382F]">
           Order comforting dishes. We provide ready-to-cook Filipino staples and home-cooked favorites so you can enjoy authentic flavors with ease.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
-            href="/#featured"
+            href="/#products"
             className="inline-flex h-12 items-center justify-center rounded-md bg-[#D9C7A7] px-6 text-base font-semibold text-[#2B241E] transition hover:bg-[#CBB58F]"
           >
             Explore the Menu

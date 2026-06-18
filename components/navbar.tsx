@@ -14,7 +14,7 @@ import type { FoodProduct } from "@/lib/types";
 import { useCart } from "@/components/cart-provider";
 
 const navLinks = [
-  { href: "/#featured", label: "Shop/Menu" },
+  { href: "/#products", label: "Shop/Menu" },
   { href: "/about", label: "About Us" },
   // { href: "/deals", label: "Deals" }
 ];

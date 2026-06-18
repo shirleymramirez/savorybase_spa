@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CreditCard, MapPin, ShieldCheck } from "lucide-react";
+import { CreditCard, MapPin, ShieldCheck, AlertCircle } from "lucide-react";
 import { useCart } from "@/components/cart-provider";
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
@@ -11,16 +11,23 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
   currency: "USD"
 });
 
+interface FormErrors {
+  email?: string;
+  phone?: string;
+  recipientName?: string;
+  message?: string;
+}
+
 export default function CheckoutPage() {
   const { items } = useCart();
   const router = useRouter();
-  // const [shippingMethod, setShippingMethod] = useState("standard");
 
-  const [email, setEmail] = useState("guest@example.com");
-  const [phone, setPhone] = useState("(555) 012-3456");
-  const [recipientName, setRecipientName] = useState("Jordan Rivera");
-  const [deliveryAddress, setDeliveryAddress] = useState("123 Market Street, Suite 400, San Francisco, CA 94105");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [recipientName, setRecipientName] = useState("");
   const [message, setMessage] = useState("");
+
+  const [errors, setErrors] = useState<FormErrors>({});
 
   const subtotal = useMemo(
     () =>
@@ -30,9 +37,6 @@ export default function CheckoutPage() {
       ),
     [items]
   );
-  // const shipping = subtotal > 0 ? (shippingMethod === "express" ? 12.99 : 6.99) : 0;
-  // const tax = subtotal * 0.086;
-  // const grandTotal = subtotal + shipping + tax;
   const grandTotal = subtotal;
 
   if (items.length === 0) {
@@ -53,15 +57,59 @@ export default function CheckoutPage() {
     );
   }
 
-  function handlePlaceOrder() {
+  // Clear specific field errors when user starts typing or fixes the field
+  const clearFieldError = (fieldName: keyof FormErrors) => {
+    if (errors[fieldName]) {
+      setErrors((prev) => {
+        const updated = { ...prev };
+        delete updated[fieldName];
+        return updated;
+      });
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Please enter a valid email address.";
+    }
+
+    if (!phone.trim()) {
+      newErrors.phone = "Phone number is required.";
+    } else if (!/^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/.test(phone)) {
+      newErrors.phone = "Please enter a valid US phone number.";
+    }
+
+    if (!recipientName.trim()) {
+      newErrors.recipientName = "Recipient name is required.";
+    }
+
+    if (!message.trim()) {
+      newErrors.message = "Message is required.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handlePlaceOrder = () => {
+    if (!validateForm()) {
+      // Find the first error component and scroll to it smoothly
+      const firstErrorField = document.querySelector('[aria-invalid="true"]');
+      if (firstErrorField) {
+        firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      return;
+    }
+
     const checkoutData = {
       items,
       customer: { email, phone },
-      // shippingMethod,
       recipientName,
-      deliveryAddress,
       message,
-      // totals: { subtotal, shipping, tax, grandTotal }
       totals: { subtotal, shipping: 0, tax: 0, grandTotal }
     };
 
@@ -96,19 +144,45 @@ export default function CheckoutPage() {
                 Email address
                 <input
                   type="email"
+                  placeholder="Enter your email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                  onChange={ (e) => {
+                    setEmail(e.target.value);
+                    clearFieldError("email");
+                  }}
+                  onFocus={() => setEmail("")}
+                  aria-invalid={!!errors.email}
+                  className={`h-11 rounded-md border bg-[#FFFDF7] px-3 text-sm text-[#2B241E] placeholder:text-[#bdb8b0] outline-none transition focus:ring-2 focus:ring-[#C7D3B5] ${
+                    errors.email ? "border-red-500 focus:border-red-500" : "border-[#D8CDBB] focus:border-[#6E7A5E]"
+                  }`}
                 />
+                {errors.email && (
+                  <p className="mt-1 flex items-center gap-1.5 text-xs font-medium text-red-600">
+                    <AlertCircle className="h-3.5 w-3.5" /> {errors.email}
+                  </p>
+                )}
               </label>
               <label className="grid gap-2 text-sm font-semibold text-[#2B241E]">
                 Phone number
                 <input
                   type="tel"
+                  placeholder="Enter your phone number"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    clearFieldError("phone");
+                  }}
+                  onFocus={() => setPhone("")}
+                  aria-invalid={!!errors.phone}
+                  className={`h-11 rounded-md border bg-[#FFFDF7] px-3 text-sm text-[#2B241E] placeholder:text-[#bdb8b0] outline-none transition focus:ring-2 focus:ring-[#C7D3B5] ${
+                    errors.phone ? "border-red-500 focus:border-red-500" : "border-[#D8CDBB] focus:border-[#6E7A5E]"
+                  }`}
                 />
+                {errors.phone && (
+                  <p className="mt-1 flex items-center gap-1.5 text-xs font-medium text-red-600">
+                    <AlertCircle className="h-3.5 w-3.5" /> {errors.phone}
+                  </p>
+                )}
               </label>
             </div>
           </article>
@@ -123,29 +197,43 @@ export default function CheckoutPage() {
                 Recipient name
                 <input
                   type="text"
+                  placeholder="Enter recipient name"
                   value={recipientName}
-                  onChange={(e) => setRecipientName(e.target.value)}
-                  className="h-11 rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                  onChange={(e) => {
+                    setRecipientName(e.target.value);
+                    clearFieldError("recipientName");
+                  }}
+                  onFocus={() => setRecipientName("")}
+                  aria-invalid={!!errors.recipientName}
+                  className={`h-11 rounded-md border bg-[#FFFDF7] px-3 text-sm text-[#2B241E] placeholder:text-[#bdb8b0] outline-none transition focus:ring-2 focus:ring-[#C7D3B5] ${
+                    errors.recipientName ? "border-red-500 focus:border-red-500" : "border-[#D8CDBB] focus:border-[#6E7A5E]"
+                  }`}
                 />
-              </label>
-              <label className="grid gap-2 text-sm font-semibold text-[#2B241E] sm:col-span-2">
-                Delivery address
-                <textarea
-                  rows={3}
-                  value={deliveryAddress}
-                  onChange={(e) => setDeliveryAddress(e.target.value)}
-                  className="rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 py-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
-                />
+                {errors.recipientName && (
+                  <p className="mt-1 flex items-center gap-1.5 text-xs font-medium text-red-600">
+                    <AlertCircle className="h-3.5 w-3.5" /> {errors.recipientName}
+                  </p>
+                )}
               </label>
               <label className="grid gap-2 text-sm font-semibold text-[#2B241E] sm:col-span-2">
                 Message
                 <textarea
                   rows={3}
+                  placeholder="Enter a message for the recipient"
                   value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Add a message for the delivery"
-                  className="rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 py-3 text-sm text-[#2B241E] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
+                  onChange={(e) => {
+                    setMessage(e.target.value);
+                    clearFieldError("message");
+                  }}
+                  onFocus={() => setMessage("")}
+                  aria-invalid={!!errors.message}
+                  className="rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 py-3 text-sm text-[#2B241E] placeholder:text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
                 />
+                  {errors.message && (
+                  <p className="mt-1 flex items-center gap-1.5 text-xs font-medium text-red-600">
+                    <AlertCircle className="h-3.5 w-3.5" /> {errors.message}
+                  </p>
+                )}
               </label>
             </div>
           </article>
@@ -191,14 +279,6 @@ export default function CheckoutPage() {
               <dt>Subtotal</dt>
               <dd className="font-semibold text-[#2B241E]">{currencyFormatter.format(subtotal)}</dd>
             </div>
-            {/* <div className="flex items-center justify-between gap-4">
-              <dt>Shipping</dt>
-              <dd className="font-semibold text-[#2B241E]">{currencyFormatter.format(shipping)}</dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt>Taxes</dt>
-              <dd className="font-semibold text-[#2B241E]">{currencyFormatter.format(tax)}</dd>
-            </div> */}
             <div className="flex items-center justify-between gap-4 border-t border-[#D8CDBB] pt-4 text-base">
               <dt className="font-bold text-[#2B241E]">Grand total</dt>
               <dd className="font-bold text-[#2B241E]">{currencyFormatter.format(grandTotal)}</dd>

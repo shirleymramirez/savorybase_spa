@@ -98,7 +98,6 @@ export default function CheckoutSummaryPage() {
         <h2 className="mt-4 text-xl font-semibold text-[#2B241E]">Recipient & Address</h2>
         <div className="mt-3 text-sm text-[#4F463B]">
           <div><strong>Name:</strong> {checkoutData.recipientName}</div>
-          <div><strong>Address:</strong> {checkoutData.deliveryAddress}</div>
           <div><strong>Message:</strong> {checkoutData.message}</div>
         </div>
         

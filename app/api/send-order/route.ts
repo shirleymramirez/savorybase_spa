@@ -42,7 +42,7 @@ export async function POST(request: Request) {
   const checkout: Checkout = body.checkout;
   const gmailUser = process.env.GMAIL_USER;
   const gmailPass = process.env.GMAIL_PASS;
-  const recipient = "jheilhet@gmail.com";
+  const recipient = "jheilhet@yahoo.com";
 
   if (!gmailUser || !gmailPass) {
     return NextResponse.json(

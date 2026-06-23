@@ -12,7 +12,7 @@ export function Footer() {
             Filipino-inspired prepared meals, pantry favorites, and ready-to-enjoy foods made for memorable meals.
           </p>
           <p className="mt-4 text-sm leading-6 text-[#E9DDC8]">
-            214 E Roosevelt St, Phoenix, AZ 85004
+            Chandler, AZ 85249
             <br />
             hello@savorybase.com
             <br />
@@ -28,7 +28,7 @@ export function Footer() {
             <Link href="/" className="transition hover:text-[#FFFDF7]">
               Shop/Menu
             </Link>
-            <Link href="/#featured" className="transition hover:text-[#FFFDF7]">
+            <Link href="/#products" className="transition hover:text-[#FFFDF7]">
               Featured
             </Link>
             {/* <Link href="/deals" className="transition hover:text-[#FFFDF7]">

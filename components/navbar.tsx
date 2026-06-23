@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { FoodProduct } from "@/lib/types";
+import { fallbackFoods } from "@/lib/cms";
 import { useCart } from "@/components/cart-provider";
 
 const navLinks = [
@@ -20,10 +21,6 @@ const navLinks = [
 ];
 
 const SEARCH_DEBOUNCE_MS = 300;
-
-interface FoodsApiResponse {
-  foods?: FoodProduct[];
-}
 
 interface SearchSuggestion {
   title: string;
@@ -35,7 +32,6 @@ export function Navbar() {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchSuggestions, setSearchSuggestions] = useState<SearchSuggestion[]>([]);
   const { items, totalQuantity } = useCart();
   const cartTotal = useMemo(
     () =>
@@ -45,12 +41,31 @@ export function Navbar() {
       ),
     [items]
   );
+
+  // Create search suggestions from static CMS data
+  const allSuggestions = useMemo<SearchSuggestion[]>(() => {
+    const uniqueTitles = new Set<string>();
+    return fallbackFoods.reduce<SearchSuggestion[]>((suggestions, food) => {
+      if (!food.title || uniqueTitles.has(food.title)) {
+        return suggestions;
+      }
+
+      uniqueTitles.add(food.title);
+      suggestions.push({
+        title: food.title,
+        slug: food.slug
+      });
+
+      return suggestions;
+    }, []);
+  }, []);
+
   const filteredSuggestions = useMemo(
     () =>
-      searchSuggestions.filter((suggestion) =>
+      allSuggestions.filter((suggestion) =>
         suggestion.title.toLowerCase().includes(debouncedQuery.toLowerCase())
       ),
-    [debouncedQuery, searchSuggestions]
+    [debouncedQuery, allSuggestions]
   );
 
   useEffect(() => {
@@ -63,80 +78,8 @@ export function Navbar() {
     };
   }, [query]);
 
-  useEffect(() => {
-    if (!isSearchOpen) {
-      return;
-    }
-
-    const controller = new AbortController();
-
-    async function fetchSearchSuggestions() {
-      try {
-        const response = await fetch("/api/foods", {
-          method: "GET",
-          headers: {
-            Accept: "application/json"
-          },
-          signal: controller.signal
-        });
-
-        if (!response.ok) {
-          throw new Error(`Unable to load search suggestions: ${response.status}`);
-        }
-
-        const payload = (await response.json()) as FoodsApiResponse | FoodProduct[];
-        const foods = Array.isArray(payload) ? payload : payload.foods ?? [];
-        const uniqueSuggestionTitles = new Set<string>();
-        const nextSuggestions = foods.reduce<SearchSuggestion[]>((suggestions, food) => {
-          if (!food.title || uniqueSuggestionTitles.has(food.title)) {
-            return suggestions;
-          }
-
-          uniqueSuggestionTitles.add(food.title);
-          suggestions.push({
-            title: food.title,
-            slug: food.slug
-          });
-
-          return suggestions;
-        }, []);
-
-        setSearchSuggestions(nextSuggestions);
-      } catch (error) {
-        if (error instanceof DOMException && error.name === "AbortError") {
-          return;
-        }
-
-        console.error(error);
-      }
-    }
-
-    fetchSearchSuggestions();
-
-    return () => {
-      controller.abort();
-    };
-  }, [debouncedQuery, isSearchOpen]);
-
   return (
     <header className="sticky top-0 z-50 border-b border-[#D8CDBB] bg-[#FAF7EF]/95 backdrop-blur">
-      <div className="border-b border-[#6E7A5E] bg-[#3F4A36] text-sm text-[#FAF7EF]">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 sm:px-6 lg:px-8">
-          {/* <button
-            type="button"
-            className="inline-flex min-w-0 items-center gap-2 font-semibold"
-            aria-label="Set delivery address"
-          >
-            <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
-            <span className="truncate">Delivering to Phoenix, AZ 85004</span>
-            <ChevronDown className="hidden h-4 w-4 sm:block" aria-hidden="true" />
-          </button> */}
-          {/* <p className="hidden shrink-0 font-medium text-[#E9DDC8] md:block">
-            Free delivery over $35
-          </p> */}
-        </div>
-      </div>
-
       <nav
         className="mx-auto grid max-w-7xl grid-cols-[auto_auto] items-center gap-3 px-4 py-3 sm:px-6 md:grid-cols-[auto_minmax(240px,1fr)_auto] lg:px-8"
         aria-label="Main navigation"
@@ -161,11 +104,11 @@ export function Navbar() {
             onBlur={() => window.setTimeout(() => setIsSearchOpen(false), 120)}
             placeholder="Search delicious meals..."
             className="h-11 w-full rounded-md border border-[#D8CDBB] bg-[#FFFDF7] pl-10 pr-4 text-sm font-medium text-[#2B241E] outline-none transition placeholder:text-[#7A6E5E] focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
-            aria-label="Search menu"
+            aria-label="Search menu here..."
           />
           {isSearchOpen ? (
             <div className="absolute left-0 right-0 top-12 overflow-hidden rounded-md border border-[#D8CDBB] bg-[#FFFDF7] shadow-lg">
-              {(filteredSuggestions.length > 0 ? filteredSuggestions : searchSuggestions)
+              {(filteredSuggestions.length > 0 ? filteredSuggestions : allSuggestions)
                 .slice(0, 5)
                 .map((suggestion) => (
                   <Link
@@ -194,14 +137,6 @@ export function Navbar() {
               </Link>
             ))}
           </div>
-
-          <Link
-            href="/login"
-            className="hidden h-10 items-center gap-2 rounded-md px-3 text-sm font-semibold text-[#4F463B] transition hover:bg-[#EFE7D8] hover:text-[#2B241E] sm:inline-flex"
-          >
-            <UserRound className="h-5 w-5" aria-hidden="true" />
-            Login
-          </Link>
 
           <Link
             href="/cart"

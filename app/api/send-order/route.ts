@@ -56,7 +56,7 @@ export async function POST(request: Request) {
   function buildHtml(checkoutData: Checkout) {
     let itemsHtml = "";
     for (const item of checkoutData.items || []) {
-      itemsHtml += `<li>${item.food.title} x${item.quantity} - $${Number(item.food.price).toFixed(2)}</li>`;
+      itemsHtml += `<li>${item.food.title} x${item.quantity} - ${item.food.price}</li>`;
     }
 
     return `

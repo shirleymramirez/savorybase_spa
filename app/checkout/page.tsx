@@ -28,6 +28,7 @@ export default function CheckoutPage() {
   const [message, setMessage] = useState("");
 
   const [errors, setErrors] = useState<FormErrors>({});
+  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
 
   const subtotal = useMemo(
     () =>
@@ -190,7 +191,7 @@ export default function CheckoutPage() {
           <article className="rounded-xl border border-[#D8CDBB] bg-[#FFFDF7] p-6 shadow-sm">
             <div className="flex items-center gap-3">
               <MapPin className="h-5 w-5 text-[#6E7A5E]" aria-hidden="true" />
-              <h2 className="text-xl font-bold text-[#2B241E]">Shipping & fulfillment</h2>
+              <h2 className="text-xl font-bold text-[#2B241E]">Pickup & Fulfillment Details</h2>
             </div>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <label className="grid gap-2 text-sm font-semibold text-[#2B241E] sm:col-span-2">
@@ -216,10 +217,10 @@ export default function CheckoutPage() {
                 )}
               </label>
               <label className="grid gap-2 text-sm font-semibold text-[#2B241E] sm:col-span-2">
-                Message
+                Date and Time of Pickup
                 <textarea
                   rows={3}
-                  placeholder="Enter a message for the recipient"
+                  placeholder="Enter any specific instructions or preferred pickup time"
                   value={message}
                   onChange={(e) => {
                     setMessage(e.target.value);
@@ -245,14 +246,23 @@ export default function CheckoutPage() {
             </div>
             <p className="mt-2 text-sm text-[#62584B]">Payment can be made with any of the following methods:</p>
             <div className="mt-5 flex flex-wrap gap-3">
-              {['Cash', 'Zelle', 'Apple Pay', 'Google Pay'].map((method) => (
-                <span
-                  key={method}
-                  className="rounded-full border border-[#D8CDBB] bg-[#FAF7EF] px-3 py-2 text-sm font-semibold text-[#4F463B]"
-                >
-                  {method}
-                </span>
-              ))}
+              {['Cash', 'Zelle', 'Apple Pay', 'Google Pay'].map((method) => {
+                const isSelected = selectedMethod === method;
+                return (
+                  <button
+                    key={method}
+                    type="button"
+                    onClick={() => setSelectedMethod(method)}
+                    className={`rounded-full border px-3 py-2 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#3F4A36] focus:ring-offset-2 ${
+                      isSelected
+                        ? 'border-[#3F4A36] bg-[#3F4A36] text-white'
+                        : 'border-[#D8CDBB] bg-[#FAF7EF] text-[#4F463B] hover:bg-[#F3EFE6]'
+                    }`}
+                  >
+                    {method}
+                  </button>
+                );
+              })}
             </div>
           </article>
         </section>

@@ -16,8 +16,6 @@ export default function CartPage() {
     (total, item) => total + parseFoodPrice(item.food.price) * item.quantity,
     0
   );
-  // const estimatedTax = subtotal * 0.086;
-  // const estimatedTotal = subtotal + estimatedTax;
     const estimatedTotal = subtotal;
 
   if (items.length === 0) {
@@ -168,12 +166,6 @@ export default function CartPage() {
                 {currencyFormatter.format(subtotal)}
               </dd>
             </div>
-            {/* <div className="flex items-center justify-between gap-4">
-              <dt>Estimated tax</dt>
-              <dd className="font-semibold text-[#2B241E]">
-                {currencyFormatter.format(estimatedTax)}
-              </dd>
-            </div> */}
             <div className="flex items-center justify-between gap-4 border-t border-[#D8CDBB] pt-4 text-base">
               <dt className="font-bold text-[#2B241E]">Estimated total</dt>
               <dd className="font-bold text-[#2B241E]">

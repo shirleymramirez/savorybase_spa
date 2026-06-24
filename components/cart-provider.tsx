@@ -21,6 +21,7 @@ interface CartContextValue {
   addItem: (food: FoodProduct) => void;
   decreaseItem: (foodId: string) => void;
   removeItem: (foodId: string) => void;
+  clearCart: () => void;
   getQuantity: (foodId: string) => number;
 }
 
@@ -79,6 +80,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const clearCart = useCallback(() => {
+    setItemsById({});
+  }, []);
+
   const value = useMemo(() => {
     const items = Object.values(itemsById);
 
@@ -88,9 +93,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
       addItem,
       decreaseItem,
       removeItem,
+      clearCart,
       getQuantity: (foodId: string) => itemsById[foodId]?.quantity ?? 0
     };
-  }, [addItem, decreaseItem, itemsById, removeItem]);
+  }, [addItem, clearCart, decreaseItem, itemsById, removeItem]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

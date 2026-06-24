@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/components/cart-provider";
 
 interface Customer {
   email: string;
@@ -38,6 +39,7 @@ interface CheckoutData {
 
 export default function CheckoutSummaryPage() {
   const router = useRouter();
+  const { clearCart } = useCart();
   const [checkoutData, setCheckoutData] = useState<CheckoutData | null>(null);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -72,8 +74,10 @@ export default function CheckoutSummaryPage() {
         const body = await res.text();
         throw new Error(body || "Failed to send order");
       }
+
+      clearCart();
       setSent(true);
-    } catch (err: unknown) { // Fixed: Changed from 'any' to 'unknown'
+    } catch (err: unknown) {
       console.error(err);
       // Type safe extraction of error message
       const message = err instanceof Error ? err.message : "Unknown error";

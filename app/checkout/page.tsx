@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CreditCard, MapPin, ShieldCheck, AlertCircle } from "lucide-react";
 import { useCart } from "@/components/cart-provider";
@@ -16,19 +16,83 @@ interface FormErrors {
   phone?: string;
   recipientName?: string;
   message?: string;
+  paymentMethod?: string;
+}
+
+interface CheckoutDraft {
+  email?: string;
+  phone?: string;
+  recipientName?: string;
+  message?: string;
+  paymentMethod?: string | null;
+}
+
+function readStoredCheckoutDraft(): CheckoutDraft | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    const rawDraft = window.sessionStorage.getItem("checkoutDraft");
+    if (rawDraft) {
+      return JSON.parse(rawDraft) as CheckoutDraft;
+    }
+
+    const rawCheckout = window.sessionStorage.getItem("checkoutData");
+    if (!rawCheckout) {
+      return null;
+    }
+
+    const checkoutData = JSON.parse(rawCheckout) as {
+      customer?: { email?: string; phone?: string };
+      recipientName?: string;
+      message?: string;
+      paymentMethod?: string | null;
+    };
+
+    return {
+      email: checkoutData.customer?.email ?? "",
+      phone: checkoutData.customer?.phone ?? "",
+      recipientName: checkoutData.recipientName ?? "",
+      message: checkoutData.message ?? "",
+      paymentMethod: checkoutData.paymentMethod ?? null
+    };
+  } catch (error) {
+    console.error("Failed to load checkout draft", error);
+    return null;
+  }
 }
 
 export default function CheckoutPage() {
   const { items } = useCart();
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [recipientName, setRecipientName] = useState("");
-  const [message, setMessage] = useState("");
+  const initialDraft = readStoredCheckoutDraft();
+
+  const [email, setEmail] = useState(initialDraft?.email ?? "");
+  const [phone, setPhone] = useState(initialDraft?.phone ?? "");
+  const [recipientName, setRecipientName] = useState(initialDraft?.recipientName ?? "");
+  const [message, setMessage] = useState(initialDraft?.message ?? "");
 
   const [errors, setErrors] = useState<FormErrors>({});
-  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<string | null>(initialDraft?.paymentMethod ?? null);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(
+        "checkoutDraft",
+        JSON.stringify({
+          email,
+          phone,
+          recipientName,
+          message,
+          paymentMethod: selectedMethod
+        })
+      );
+    } catch (error) {
+      console.error("Failed to save checkout draft", error);
+    }
+  }, [email, phone, recipientName, message, selectedMethod]);
 
   const subtotal = useMemo(
     () =>
@@ -92,6 +156,10 @@ export default function CheckoutPage() {
       newErrors.message = "Message is required.";
     }
 
+    if (!selectedMethod) {
+      newErrors.paymentMethod = "Please select a payment method.";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -111,6 +179,7 @@ export default function CheckoutPage() {
       customer: { email, phone },
       recipientName,
       message,
+      paymentMethod: selectedMethod,
       totals: { subtotal, shipping: 0, tax: 0, grandTotal }
     };
 
@@ -147,11 +216,10 @@ export default function CheckoutPage() {
                   type="email"
                   placeholder="Enter your email"
                   value={email}
-                  onChange={ (e) => {
+                  onChange={(e) => {
                     setEmail(e.target.value);
                     clearFieldError("email");
                   }}
-                  onFocus={() => setEmail("")}
                   aria-invalid={!!errors.email}
                   className={`h-11 rounded-md border bg-[#FFFDF7] px-3 text-sm text-[#2B241E] placeholder:text-[#bdb8b0] outline-none transition focus:ring-2 focus:ring-[#C7D3B5] ${
                     errors.email ? "border-red-500 focus:border-red-500" : "border-[#D8CDBB] focus:border-[#6E7A5E]"
@@ -173,7 +241,6 @@ export default function CheckoutPage() {
                     setPhone(e.target.value);
                     clearFieldError("phone");
                   }}
-                  onFocus={() => setPhone("")}
                   aria-invalid={!!errors.phone}
                   className={`h-11 rounded-md border bg-[#FFFDF7] px-3 text-sm text-[#2B241E] placeholder:text-[#bdb8b0] outline-none transition focus:ring-2 focus:ring-[#C7D3B5] ${
                     errors.phone ? "border-red-500 focus:border-red-500" : "border-[#D8CDBB] focus:border-[#6E7A5E]"
@@ -204,7 +271,6 @@ export default function CheckoutPage() {
                     setRecipientName(e.target.value);
                     clearFieldError("recipientName");
                   }}
-                  onFocus={() => setRecipientName("")}
                   aria-invalid={!!errors.recipientName}
                   className={`h-11 rounded-md border bg-[#FFFDF7] px-3 text-sm text-[#2B241E] placeholder:text-[#bdb8b0] outline-none transition focus:ring-2 focus:ring-[#C7D3B5] ${
                     errors.recipientName ? "border-red-500 focus:border-red-500" : "border-[#D8CDBB] focus:border-[#6E7A5E]"
@@ -226,7 +292,6 @@ export default function CheckoutPage() {
                     setMessage(e.target.value);
                     clearFieldError("message");
                   }}
-                  onFocus={() => setMessage("")}
                   aria-invalid={!!errors.message}
                   className="rounded-md border border-[#D8CDBB] bg-[#FFFDF7] px-3 py-3 text-sm text-[#2B241E] placeholder:text-[#bdb8b0] outline-none transition focus:border-[#6E7A5E] focus:ring-2 focus:ring-[#C7D3B5]"
                 />
@@ -252,7 +317,10 @@ export default function CheckoutPage() {
                   <button
                     key={method}
                     type="button"
-                    onClick={() => setSelectedMethod(method)}
+                    onClick={() => {
+                      setSelectedMethod(method);
+                      clearFieldError("paymentMethod");
+                    }}
                     className={`rounded-full border px-3 py-2 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#3F4A36] focus:ring-offset-2 ${
                       isSelected
                         ? 'border-[#3F4A36] bg-[#3F4A36] text-white'
@@ -264,6 +332,11 @@ export default function CheckoutPage() {
                 );
               })}
             </div>
+            {errors.paymentMethod && (
+              <p className="mt-3 flex items-center gap-1.5 text-xs font-medium text-red-600">
+                <AlertCircle className="h-3.5 w-3.5" /> {errors.paymentMethod}
+              </p>
+            )}
           </article>
         </section>
 

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 interface Customer {
   email: string;
@@ -32,6 +31,7 @@ interface CheckoutData {
   recipientName: string;
   deliveryAddress: string;
   message: string;
+  paymentMethod?: string | null;
   items: Item[];
   totals: Totals;
 }
@@ -82,7 +82,22 @@ export default function CheckoutSummaryPage() {
       setSending(false);
     }
   }
-  console.log("Checkout data:", checkoutData);
+  const handleEdit = () => {
+    try {
+      sessionStorage.setItem("checkoutDraft", JSON.stringify({
+        email: checkoutData?.customer.email ?? "",
+        phone: checkoutData?.customer.phone ?? "",
+        recipientName: checkoutData?.recipientName ?? "",
+        message: checkoutData?.message ?? "",
+        paymentMethod: checkoutData?.paymentMethod ?? null
+      }));
+    } catch (error) {
+      console.error("Failed to persist checkout draft before editing", error);
+    }
+
+    router.push("/checkout");
+  };
+
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10">
       <h1 className="text-3xl font-bold text-[#2B241E]">Order summary</h1>
@@ -99,6 +114,7 @@ export default function CheckoutSummaryPage() {
         <div className="mt-3 text-sm text-[#4F463B]">
           <div><strong>Name:</strong> {checkoutData.recipientName}</div>
           <div><strong>Message:</strong> {checkoutData.message}</div>
+          <div><strong>Payment method:</strong> {checkoutData.paymentMethod || "Not selected"}</div>
         </div>
         
         <h2 className="mt-4 text-xl font-semibold text-[#2B241E]">Items</h2>
@@ -128,9 +144,13 @@ export default function CheckoutSummaryPage() {
           >
             {sending ? "Sending…" : sent ? "Sent" : "Send"}
           </button>
-          <Link href="/checkout" className="inline-flex h-12 items-center justify-center rounded-md border border-[#D8CDBB] bg-white px-5 text-base font-semibold text-[#2B241E]">
+          <button
+            type="button"
+            onClick={handleEdit}
+            className="inline-flex h-12 items-center justify-center rounded-md border border-[#D8CDBB] bg-white px-5 text-base font-semibold text-[#2B241E]"
+          >
             Edit
-          </Link>
+          </button>
         </div>
         
         {error && <p className="mt-4 text-sm text-red-600">Error: {error}</p>}

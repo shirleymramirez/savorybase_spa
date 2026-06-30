@@ -311,7 +311,7 @@ export default function CheckoutPage() {
             </div>
             <p className="mt-2 text-sm text-[#62584B]">Payment can be made with any of the following methods:</p>
             <div className="mt-5 flex flex-wrap gap-3">
-              {['Cash', 'Zelle', 'Apple Pay', 'Google Pay'].map((method) => {
+              {['Cash', 'Zelle'].map((method) => {
                 const isSelected = selectedMethod === method;
                 return (
                   <button

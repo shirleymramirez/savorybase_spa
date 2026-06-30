@@ -4,7 +4,7 @@ import Image from "next/image";
 export function HeroSection() {
   return (
     <section className="pb-8 pt-2 sm:pb-10">
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 h-[95%]">
          <Image
             src="/products/longsilog.webp"
             alt="Hearty plate of longsilog with garlic rice, fried egg, and sweet pork longganisa"

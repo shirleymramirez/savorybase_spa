@@ -4,13 +4,11 @@ import {
   Menu,
   Search,
   ShoppingCart,
-  UserRound,
   Utensils,
   X
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import type { FoodProduct } from "@/lib/types";
 import { fallbackFoods } from "@/lib/cms";
 import { useCart } from "@/components/cart-provider";
 

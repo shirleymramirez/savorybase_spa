@@ -7,7 +7,7 @@ interface ProductGridProps {
 
 export function ProductGrid({ foods }: ProductGridProps) {
   return (
-    <section id="products" aria-label="Food products">
+    <section id="products" aria-label="Food products" className="mb-16">
       <div>
          <p className="text-sm font-semibold uppercase tracking-wide text-[#6E7A5E]">
           Featured & Best-Selling

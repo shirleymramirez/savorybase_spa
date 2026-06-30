@@ -26,7 +26,7 @@ export function Footer() {
           </h2>
           <div className="mt-3 flex flex-col gap-2 text-sm text-[#E9DDC8]">
             <Link href="/" className="transition hover:text-[#FFFDF7]">
-              Shop/Menu
+              Shop All
             </Link>
             <Link href="/#products" className="transition hover:text-[#FFFDF7]">
               Featured

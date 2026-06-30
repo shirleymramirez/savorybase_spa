@@ -15,7 +15,7 @@ import { fallbackFoods } from "@/lib/cms";
 import { useCart } from "@/components/cart-provider";
 
 const navLinks = [
-  { href: "/#products", label: "Shop/Menu" },
+  { href: "/#products", label: "Shop All" },
   { href: "/about", label: "About Us" },
   // { href: "/deals", label: "Deals" }
 ];
@@ -80,6 +80,9 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#D8CDBB] bg-[#FAF7EF]/95 backdrop-blur">
+      <div className="border-b border-[#6E7A5E] bg-[#3F4A36]">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 sm:px-6 lg:px-8"></div>
+      </div>
       <nav
         className="mx-auto grid max-w-7xl grid-cols-[auto_auto] items-center gap-3 px-4 py-3 sm:px-6 md:grid-cols-[auto_minmax(240px,1fr)_auto] lg:px-8"
         aria-label="Main navigation"

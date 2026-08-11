@@ -31,24 +31,8 @@ export function Footer() {
             <Link href="/#products" className="transition hover:text-[#FFFDF7]">
               Featured
             </Link>
-            {/* <Link href="/deals" className="transition hover:text-[#FFFDF7]">
-              Deals
-            </Link> */}
           </div>
         </div>
-
-        {/* <div>
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-[#C7D3B5]">
-            Hours
-          </h2>
-          <p className="mt-3 text-sm leading-6 text-[#E9DDC8]">
-            Monday-Friday: 10 AM-8 PM
-            <br />
-            Saturday: 11 AM-9 PM
-            <br />
-            Sunday: 11 AM-6 PM
-          </p>
-        </div> */}
 
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-wide text-[#C7D3B5]">

@@ -2,11 +2,13 @@ import Link from "next/link";
 import Image from "next/image";
 
 export function HeroSection() {
+  const basePath = process.env.NODE_ENV === "production" ? "/savorybase_spa" : "";
+
   return (
     <section className="pb-8 pt-2 sm:pb-10">
       <div className="absolute inset-0 h-[95%]">
          <Image
-            src="/products/longsilog.webp"
+            src={`${basePath}/products/longsilog.webp`}
             alt="Hearty plate of longsilog with garlic rice, fried egg, and sweet pork longganisa"
             fill
             sizes="100vw"

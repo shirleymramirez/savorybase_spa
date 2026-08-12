@@ -1,6 +1,19 @@
 import { slugify } from "@/lib/slug";
 import type { FoodProduct, SavoryBaseFood } from "@/lib/types";
 
+const basePath = process.env.NODE_ENV === "production" ? "/savorybase_spa" : "";
+const resolvePublicPath = (path: string) => {
+  if (!path.startsWith("/")) {
+    return path;
+  }
+
+  if (basePath && path.startsWith(`${basePath}/`)) {
+    return path;
+  }
+
+  return `${basePath}${path}`;
+};
+
 export const fallbackFoods: FoodProduct[] = [
   {
     id: "sweet-pork-longganisa",
@@ -10,7 +23,7 @@ export const fallbackFoods: FoodProduct[] = [
     description:
       "A lb of deliciously sweet Filipino sausage, perfect for breakfast or as a main dish.",
     image: {
-      url: "/products/sweet-pork-longganisa.webp",
+      url: resolvePublicPath("/products/sweet-pork-longganisa.webp"),
       alt: "A lb of sweet pork longganisa with garlic and spices"
     },
     categories: ["main course", "pork"]
@@ -23,7 +36,7 @@ export const fallbackFoods: FoodProduct[] = [
     description:
       "A lb of savory and garlicky Filipino sausage inspired by the flavors of Vigan, ideal for breakfast or as a flavorful addition to any meal.",
     image: {
-      url: "/products/savory-vigan-longganisa.webp",
+      url: resolvePublicPath("/products/savory-vigan-longganisa.webp"),
       alt: "A lb of savory Vigan longganisa with garlic and spices"
     },
     categories: ["main course", "pork"]
@@ -36,7 +49,7 @@ export const fallbackFoods: FoodProduct[] = [
     description:
       "One loaf of meaty pork sausage, perfect for any meal.",
     image: {
-      url: "/products/meaty-pork-embutido.webp",
+      url: resolvePublicPath("/products/meaty-pork-embutido.webp"),
       alt: "A loaf of meaty pork embutido with garlic and spices"
     },
     categories: ["main course", "pork"]
@@ -49,7 +62,7 @@ export const fallbackFoods: FoodProduct[] = [
     description:
       "A lb of tangy and garlicky Filipino cured pork, perfect for breakfast or as a flavorful addition to any meal.",
     image: {
-      url: "/products/tangy-garlicy-pork-tapa.webp",
+      url: resolvePublicPath("/products/tangy-garlicy-pork-tapa.webp"),
       alt: "A lb of tangy garlicy pork tapa with garlic and spices"
     },
     categories: ["main course", "pork"]
@@ -62,7 +75,7 @@ export const fallbackFoods: FoodProduct[] = [
     description:
       "A lb of flavorful and sweet Filipino chicken dish, perfect for breakfast or as a savory addition to any meal.",
     image: {
-      url: "/products/sweet-chicken-tocino.webp",
+      url: resolvePublicPath("/products/sweet-chicken-tocino.webp"),
       alt: "A lb of flavorful sweet chicken tocino with garlic and herbs"
     },
     categories: ["main course", "chicken"]
@@ -75,7 +88,7 @@ export const fallbackFoods: FoodProduct[] = [
     description:
       "A lb of flavorful and sweet Filipino pork dish, perfect for breakfast or as a savory addition to any meal.",
     image: {
-      url: "/products/sweet-pork-tocino.webp",
+      url: resolvePublicPath("/products/sweet-pork-tocino.webp"),
       alt: "A lb of flavorful sweet pork tocino with garlic and herbs"
     },
     categories: ["main course", "pork"]
@@ -88,7 +101,7 @@ export const fallbackFoods: FoodProduct[] = [
     description:
       "A dozen of flavorful and ready-to-cook Filipino pork siomai, perfect for breakfast or as a savory addition to any meal, or as a snack.",
     image: {
-      url: "/products/flavorful-umami-pork-siomai.webp",
+      url: resolvePublicPath("/products/flavorful-umami-pork-siomai.webp"),
       alt: "A dozen of flavorful umami pork siomai."
     },
     categories: ["main course", "pork"]
@@ -180,7 +193,7 @@ function normalizeImage(
 ): FoodProduct["image"] {
   if (typeof image === "string") {
     return {
-      url: image,
+      url: resolvePublicPath(image),
       alt: title
     };
   }

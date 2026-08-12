@@ -4,7 +4,9 @@ const isProd = process.env.NODE_ENV === 'production';
 
 const nextConfig: NextConfig = {
   output: "export",
-   basePath: isProd ? '/savorybase_spa' : '',
+  basePath: isProd ? '/savorybase_spa' : '',
+  assetPrefix: isProd ? '/savorybase_spa' : '',
+  trailingSlash: true,
   images: {
     unoptimized: true,
   },
